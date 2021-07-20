@@ -1,0 +1,1 @@
+﻿SELECT TOP 1000 [Member_Log] ,[Member_ID] ,[Trans_Date] FROM [dbo].[Members_Log] where member_id = 111111 ORDER BY [Trans_Date] desc

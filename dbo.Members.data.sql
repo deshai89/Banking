@@ -1,0 +1,1 @@
+﻿select Member_Name, Member_funds from [dbo].Members where Member_ID=123456
