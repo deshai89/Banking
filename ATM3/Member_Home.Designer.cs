@@ -41,15 +41,16 @@ namespace ATM3
             this.Transaction = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Date = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Withdraw = new System.Windows.Forms.TabPage();
+            this.Withdraw_Label = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.errorText = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.withdrawText = new System.Windows.Forms.TextBox();
             this.Deposit = new System.Windows.Forms.TabPage();
+            this.Deposit_Label = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.depositTextbox = new System.Windows.Forms.TextBox();
-            this.summaryListbox = new System.Windows.Forms.ListBox();
             this.lastloginLabel = new System.Windows.Forms.Label();
             this.newest_Members_DataDataSet = new ATM3.Newest_Members_DataDataSet();
             this.memberLogBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -166,6 +167,7 @@ namespace ATM3
             // 
             // Withdraw
             // 
+            this.Withdraw.Controls.Add(this.Withdraw_Label);
             this.Withdraw.Controls.Add(this.label4);
             this.Withdraw.Controls.Add(this.errorText);
             this.Withdraw.Controls.Add(this.label3);
@@ -178,6 +180,17 @@ namespace ATM3
             this.Withdraw.TabIndex = 0;
             this.Withdraw.Text = "Withdraw";
             this.Withdraw.UseVisualStyleBackColor = true;
+            // 
+            // Withdraw_Label
+            // 
+            this.Withdraw_Label.AutoSize = true;
+            this.Withdraw_Label.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.Withdraw_Label.Location = new System.Drawing.Point(318, 513);
+            this.Withdraw_Label.Name = "Withdraw_Label";
+            this.Withdraw_Label.Size = new System.Drawing.Size(224, 29);
+            this.Withdraw_Label.TabIndex = 8;
+            this.Withdraw_Label.Text = "Withdraw Complete";
+            this.Withdraw_Label.Visible = false;
             // 
             // label4
             // 
@@ -211,12 +224,18 @@ namespace ATM3
             this.withdrawText.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.withdrawText.Location = new System.Drawing.Point(281, 382);
             this.withdrawText.Name = "withdrawText";
+            this.withdrawText.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.withdrawText.Size = new System.Drawing.Size(287, 62);
             this.withdrawText.TabIndex = 2;
+            this.withdrawText.Text = "0.00";
+            this.withdrawText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.withdrawText.Enter += new System.EventHandler(this.Textbox_Enter);
             this.withdrawText.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Numbersonly_keypress);
+            this.withdrawText.Leave += new System.EventHandler(this.Textbox_Leave);
             // 
             // Deposit
             // 
+            this.Deposit.Controls.Add(this.Deposit_Label);
             this.Deposit.Controls.Add(this.label2);
             this.Deposit.Controls.Add(this.label1);
             this.Deposit.Controls.Add(this.depositTextbox);
@@ -229,11 +248,22 @@ namespace ATM3
             this.Deposit.Text = "Deposit";
             this.Deposit.UseVisualStyleBackColor = true;
             // 
+            // Deposit_Label
+            // 
+            this.Deposit_Label.AutoSize = true;
+            this.Deposit_Label.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.Deposit_Label.Location = new System.Drawing.Point(341, 513);
+            this.Deposit_Label.Name = "Deposit_Label";
+            this.Deposit_Label.Size = new System.Drawing.Size(207, 29);
+            this.Deposit_Label.TabIndex = 7;
+            this.Deposit_Label.Text = "Deposit Complete";
+            this.Deposit_Label.Visible = false;
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(282, 312);
+            this.label2.Location = new System.Drawing.Point(280, 385);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(51, 55);
             this.label2.TabIndex = 6;
@@ -251,22 +281,16 @@ namespace ATM3
             // depositTextbox
             // 
             this.depositTextbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.depositTextbox.Location = new System.Drawing.Point(339, 309);
+            this.depositTextbox.Location = new System.Drawing.Point(337, 385);
             this.depositTextbox.Name = "depositTextbox";
-            this.depositTextbox.Size = new System.Drawing.Size(191, 62);
+            this.depositTextbox.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.depositTextbox.Size = new System.Drawing.Size(254, 62);
             this.depositTextbox.TabIndex = 3;
+            this.depositTextbox.Text = "0.00";
+            this.depositTextbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.depositTextbox.Enter += new System.EventHandler(this.Textbox_Enter);
             this.depositTextbox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Numbersonly_keypress);
-            // 
-            // summaryListbox
-            // 
-            this.summaryListbox.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.summaryListbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.summaryListbox.FormattingEnabled = true;
-            this.summaryListbox.ItemHeight = 48;
-            this.summaryListbox.Location = new System.Drawing.Point(1626, 189);
-            this.summaryListbox.Name = "summaryListbox";
-            this.summaryListbox.Size = new System.Drawing.Size(82, 100);
-            this.summaryListbox.TabIndex = 0;
+            this.depositTextbox.Leave += new System.EventHandler(this.Textbox_Leave);
             // 
             // lastloginLabel
             // 
@@ -313,7 +337,6 @@ namespace ATM3
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1829, 1406);
             this.Controls.Add(this.lastloginLabel);
-            this.Controls.Add(this.summaryListbox);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.availablefundsLabel);
             this.Controls.Add(this.welcomeLabel);
@@ -348,7 +371,6 @@ namespace ATM3
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox withdrawText;
         private System.Windows.Forms.TabPage Account_summary;
-        private System.Windows.Forms.ListBox summaryListbox;
         private System.Windows.Forms.Label lastloginLabel;
         private System.Windows.Forms.Label errorText;
         private System.Windows.Forms.Label label4;
@@ -365,5 +387,7 @@ namespace ATM3
         private System.Windows.Forms.ColumnHeader k;
         private System.Windows.Forms.ColumnHeader Transaction;
         private System.Windows.Forms.ColumnHeader Date;
+        private System.Windows.Forms.Label Deposit_Label;
+        private System.Windows.Forms.Label Withdraw_Label;
     }
 }

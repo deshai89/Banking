@@ -21,7 +21,7 @@ namespace ATM3
         public SqlConnection myConnection;
         public SqlCommand sql_commands;
         public SqlDataReader summaryReader;
-
+        
         public Member_Home(string name, decimal memberFunds, string login, int ID)
         {
             InitializeComponent();
@@ -65,10 +65,11 @@ namespace ATM3
                 Incorrect("lowFunds");
                 return;
             }
+            funds -= Convert.ToDecimal(withdrawText.Text);
             errorText.ResetText();
             //withdraws amount from available funds
             sql_commands = new SqlCommand("Update Members Set Member_Funds= @withdraw where Member_Name =@username", myConnection);
-            sql_commands.Parameters.AddWithValue("@withdraw", funds - Convert.ToDecimal(withdrawText.Text));
+            sql_commands.Parameters.AddWithValue("@withdraw", funds);
             sql_commands.Parameters.AddWithValue("username", fullName);
             myConnection.Open();
             sql_commands.ExecuteNonQuery();
@@ -80,8 +81,8 @@ namespace ATM3
             sql_commands.Parameters.AddWithValue("@date", DateTime.Today.Date);
             sql_commands.ExecuteNonQuery();
             myConnection.Close();
-            availablefundsLabel.Text = (funds - Convert.ToDecimal(withdrawText.Text)).ToString("C");
-
+            availablefundsLabel.Text = funds.ToString("C"); 
+            Confirmation("withdraw");
 
         }
 
@@ -95,7 +96,7 @@ namespace ATM3
 
         public void SummaryList()
         {
-            //summaryListbox.Items.Clear();
+            
             //fills summary list with users past deposits or withdraws
             SqlCommand summary = new SqlCommand("Select TOP 25 Member_Log, Trans_Date From Members_Log Where Member_ID = @summary Order By [Trans_Date] desc", myConnection);
             summary.Parameters.AddWithValue("@summary", memberID);
@@ -103,16 +104,10 @@ namespace ATM3
             while (summaryReader.Read())
             {
                 
-                // summaryListbox.Items.Add(summaryReader["Member_Log"]);
-                summaryListbox.Items.Insert(0, summaryReader["Member_Log"]);
-                ListViewItem lv = new ListViewItem();
-                //lv.SubItems.Add(summaryReader["Member_Log"].ToString());
-                lv.SubItems.Add(summaryReader["Member_Log"].ToString()) ;
-                lv.SubItems.Add(Convert.ToDateTime(summaryReader["Trans_Date"]).ToString("d"));
-                //summaryListView.Items.Add(summaryReader["Member_Log"].ToString());
-                //summaryListView.
-                //lv.SubItems.Contains("W/D")
                 
+                ListViewItem lv = new ListViewItem();
+                lv.SubItems.Add(summaryReader["Member_Log"].ToString()) ;
+                lv.SubItems.Add(Convert.ToDateTime(summaryReader["Trans_Date"]).ToString("d"));                
                 summaryListView.Items.Add(lv);
                 
             }
@@ -133,7 +128,6 @@ namespace ATM3
 
         private void Account_summary_Click(object sender, EventArgs e)
         {
-            summaryListbox.Items.Clear();
             summaryListView.Items.Clear();
             myConnection.Open();
             SummaryList();
@@ -150,7 +144,7 @@ namespace ATM3
 
             funds += Convert.ToDecimal(depositTextbox.Text);
             sql_commands = new SqlCommand("Update Members Set Member_Funds= @deposit where Member_Name =@username", myConnection);
-            sql_commands.Parameters.AddWithValue("@deposit", funds + Convert.ToDecimal(depositTextbox.Text));
+            sql_commands.Parameters.AddWithValue("@deposit", funds );
             sql_commands.Parameters.AddWithValue("username", fullName);
             myConnection.Open();
             sql_commands.ExecuteNonQuery();
@@ -158,16 +152,42 @@ namespace ATM3
             //saves new deposit information to members summary table
             sql_commands = new SqlCommand("INSERT INTO MEMBERS_Log (Member_Log, Member_ID, Trans_Date) VALUES (@deposit,@member_N,@date)", myConnection);
             sql_commands.Parameters.AddWithValue("@member_N", memberID);
-            sql_commands.Parameters.AddWithValue("@deposit", "Deposit +" + Convert.ToDecimal(depositTextbox.Text).ToString("C"));
+            sql_commands.Parameters.AddWithValue("@deposit", "Dep +" + Convert.ToDecimal(depositTextbox.Text));
             sql_commands.Parameters.AddWithValue("@date", DateTime.Today.Date);
             sql_commands.ExecuteNonQuery();
             myConnection.Close();
             availablefundsLabel.Text = funds.ToString("C");
+            Confirmation("deposit");
+            
+            
+        }
+
+        private void Confirmation(string Type)
+        {
+            int sleep = 3000;
+            if (Type == "withdraw")
+            {
+                Withdraw_Label.Visible = true;
+                Task.Delay(sleep).Wait();
+                Withdraw_Label.Visible = false;
+            }
+            else
+            {
+                Deposit_Label.Visible = true;
+                Task.Delay(sleep).Wait();
+                Deposit_Label.Visible = false;
+            }
         }
 
         private void Numbersonly_keypress(object sender, KeyPressEventArgs e)
         {
-            TextBox text = (TextBox)sender;
+            TextBox Textboxes = (TextBox)sender;
+            if (e.KeyChar.Equals('.'))
+            {
+                if (Textboxes.Text.Contains('.'))
+                    e.Handled = true;
+                return;
+            }
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
             {
                 e.Handled = true;
@@ -182,6 +202,31 @@ namespace ATM3
                 myConnection.Open();
                 SummaryList();
                 myConnection.Close();
+            }
+        }
+
+
+        private void Textbox_Enter(object sender, EventArgs e)
+        {
+            TextBox Textboxes = (TextBox)sender;
+            if (Textboxes.Text == "0.00")
+            {
+                Textboxes.Clear();
+            }
+        }
+
+        private void Textbox_Leave(object sender, EventArgs e)
+        {
+            TextBox Textboxes = (TextBox)sender;
+            if (Textboxes.TextLength == 0)
+            {
+                Textboxes.Text = "0.00";
+                return;
+            }
+
+            if (!Textboxes.Text.Contains('.'))
+            {
+                Textboxes.Text = Convert.ToDecimal(Textboxes.Text).ToString("N"); //returns string as decimal without $
             }
         }
     }
